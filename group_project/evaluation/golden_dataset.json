@@ -1,17 +1,114 @@
 [
   {
-    "question": "Học phí hàng năm của chương trình Business tại RMIT Vietnam là bao nhiêu?",
-    "expected_answer": "Khoảng 375.840.000 VND mỗi năm (tùy chương trình cụ thể).",
-    "expected_context": "Trang Tuition Fees, mục Undergraduate Programs"
+    "question": "Sinh viên đại học được mượn tối đa bao nhiêu tài liệu và trong bao lâu?",
+    "language": "vi",
+    "expected_answer": "Sinh viên đại học được mượn tối đa 10 tài liệu trong 30 ngày và được gia hạn một lần.",
+    "expected_context": "Undergraduate students: loan quota 10 items, loan period 30 days, one renewal.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning"]
   },
   {
-    "question": "Học phí được thanh toán theo hình thức nào?",
-    "expected_answer": "Thanh toán theo từng học kỳ, tính theo từng môn học đã đăng ký.",
-    "expected_context": "Trang Tuition Fees, mục Payment Structure"
+    "question": "Tài liệu thư viện có thể được gia hạn khi nào?",
+    "language": "vi",
+    "expected_answer": "Tài liệu có thể được gia hạn nếu chưa quá hạn và chưa được người khác đặt trước; có thể gia hạn trực tuyến, qua điện thoại hoặc trực tiếp.",
+    "expected_context": "Items can be renewed if not overdue or reserved by another user, online, by phone or in person.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning"]
   },
   {
-    "question": "Trường có cung cấp ký túc xá trong khuôn viên không?",
-    "expected_answer": "Không — trường không cung cấp chỗ ở trong khuôn viên, nhưng có đội ngũ hỗ trợ sinh viên tìm chỗ ở gần trường.",
-    "expected_context": "Trang Accommodation Services"
+    "question": "Thời gian gia hạn tài liệu thư viện là bao lâu?",
+    "language": "vi",
+    "expected_answer": "Một lần gia hạn kéo dài 15 ngày, nên tổng thời gian mượn tối đa là 45 ngày.",
+    "expected_context": "Renewals last 15 days and the maximum renewal period is 45 days.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning"]
+  },
+  {
+    "question": "Tôi có thể trả sách thư viện ở đâu?",
+    "language": "vi",
+    "expected_answer": "Có thể trả sách vào các khe trả sách được chỉ định quanh khuôn viên trường.",
+    "expected_context": "Returns can be placed in designated library book chutes around campus.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning"]
+  },
+  {
+    "question": "Phí trả tài liệu trễ là bao nhiêu?",
+    "language": "vi",
+    "expected_answer": "Phí trả trễ là 5.000 VND cho mỗi tài liệu mỗi ngày.",
+    "expected_context": "There is a fine of VND 5,000 per item per day for late items.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning"]
+  },
+  {
+    "question": "Làm sao để đặt phòng học nhóm tại thư viện?",
+    "language": "vi",
+    "expected_answer": "Đăng nhập bằng tài khoản RMIT, chọn cơ sở, chọn phòng và thời gian, sau đó xác nhận đặt phòng.",
+    "expected_context": "Log in with an RMIT account, choose campus, room and time, then confirm.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room"]
+  },
+  {
+    "question": "Có thể đặt phòng học trước tối đa bao lâu và mỗi người được đặt bao nhiêu lượt?",
+    "language": "vi",
+    "expected_answer": "Có thể đặt trước tối đa hai tuần và mỗi người được có tối đa hai lượt đặt phòng.",
+    "expected_context": "Students may book up to two weeks in advance, with two bookings maximum per person.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room"]
+  },
+  {
+    "question": "Nếu không check-in đúng giờ đặt phòng thì sao?",
+    "language": "vi",
+    "expected_answer": "Sinh viên phải check-in tại quầy thư viện trong vòng 15 phút trước giờ đặt; nếu không, lượt đặt bị hủy và được mở cho người khác.",
+    "expected_context": "Students must check in at the front desk within 15 minutes prior or the booking is cancelled.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room"]
+  },
+  {
+    "question": "How many online databases and ebooks does the RMIT Library provide?",
+    "language": "en",
+    "expected_answer": "The Library provides access to more than 600 databases and 500,000 ebooks.",
+    "expected_context": "RMIT offers over 600 databases and 500,000 ebooks among its online resources.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/library-resources"]
+  },
+  {
+    "question": "What kinds of material can I find through Google Scholar?",
+    "language": "en",
+    "expected_answer": "Google Scholar can find journal articles, conference papers, theses, books, preprints, abstracts and technical reports.",
+    "expected_context": "Google Scholar covers journal articles, conference papers, theses, books, preprints, abstracts and technical reports.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/library-resources"]
+  },
+  {
+    "question": "Where can I find databases recommended for my field of study?",
+    "language": "en",
+    "expected_answer": "Check the subject guide for your field or ask an RMIT librarian for advice.",
+    "expected_context": "Check your subject guide for recommended databases or ask librarians for advice.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/library-resources"]
+  },
+  {
+    "question": "Can students book a library study room outside library operating hours?",
+    "language": "en",
+    "expected_answer": "No. The booking system only permits bookings during Library operating hours.",
+    "expected_context": "The system only allows booking during Library operation hours.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room"]
+  },
+  {
+    "question": "Which campuses have bookable library rooms?",
+    "language": "en",
+    "expected_answer": "Room availability is provided for both the Beanland and Hanoi libraries.",
+    "expected_context": "Room availabilities are listed for both Beanland and Hanoi libraries.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room"]
+  },
+  {
+    "question": "How can I get one-to-one help with study or research questions?",
+    "language": "en",
+    "expected_answer": "You can book a consultation with an RMIT librarian.",
+    "expected_context": "The Study FAQs direct users to book a Consultation with a Librarian for further support.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/study-faq"]
+  },
+  {
+    "question": "Who should I ask if I am unsure which sources are appropriate for an assignment?",
+    "language": "en",
+    "expected_answer": "Check the assignment rubric and ask your lecturer if you are still unsure.",
+    "expected_context": "The assignment rubric indicates required source types; check with the lecturer when unsure.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/study-faq"]
+  },
+  {
+    "question": "How can I contact the RMIT Vietnam Library for further support?",
+    "language": "en",
+    "expected_answer": "Contact library@rmit.edu.vn or use the Library Chat service.",
+    "expected_context": "For further support, contact library@rmit.edu.vn or use the Chat service.",
+    "source_urls": ["https://www.rmit.edu.vn/libraryvn/student-support/study-faq"]
   }
 ]

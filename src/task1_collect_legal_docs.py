@@ -1,54 +1,52 @@
-"""
-Task 1 — Thu thập văn bản chính sách/quy định dịch vụ đại học.
-
-Hướng dẫn:
-    1. Tìm tối thiểu 3 văn bản chính sách (PDF/DOCX) từ trang công khai của một trường đại học.
-    2. Tải về và lưu vào data/landing/legal/
-    3. Đặt tên file rõ ràng, không dấu, mô tả đúng nội dung.
-
-Gợi ý nguồn (ví dụ trang công khai RMIT Vietnam — rmit.edu.vn):
-    - https://www.rmit.edu.vn/study-at-rmit/tuition-fees
-    - https://www.rmit.edu.vn/study-at-rmit/scholarships/...
-    - https://www.rmit.edu.vn/students/my-studies/fees-and-payments
-
-Gợi ý văn bản (chủ đề dịch vụ đại học):
-    - Học phí & phương thức thanh toán (Tuition Fees)
-    - Chính sách học bổng (Scholarship eligibility)
-    - Quy định ký túc xá / hỗ trợ chỗ ở (Accommodation Services)
-    - Hướng dẫn đăng ký học phần qua cổng thông tin sinh viên (Course Registration)
-
-Lưu ý: một số trang trường (vd VinUni, Fulbright) chặn bot crawler mặc định (HTTP 403) —
-không phải lỗi của bạn, đó là cấu hình WAF/Cloudflare phía server. Đổi sang trang khác
-thay vì cố vượt qua, và chỉ dùng nguồn công khai/được phép chia sẻ.
-"""
+"""Task 1 — Download public RMIT Vietnam Library documents."""
 
 from pathlib import Path
 
+import requests
+
 DATA_DIR = Path(__file__).parent.parent / "data" / "landing" / "legal"
+LEGAL_DOCUMENTS = [
+    {
+        "url": "https://www.rmit.edu.vn/content/dam/rmit/vn/en/assets-for-production/documents/pdfs/study-at-rmit/programs/english-pdf/postgraduate-programs/postgraduate-guide-14032025.pdf",
+        "filename": "rmit-postgraduate-library-guide-2025.pdf",
+    },
+    {
+        "url": "https://www.rmit.edu.vn/content/dam/rmit/vn/en/assets-for-production/documents/pdfs/library/en/tu-nguyen-en-information-literacy-and-the-use-of-library-resources-changes-in-the-generative-ai-age.pdf",
+        "filename": "rmit-information-literacy-library-resources.pdf",
+    },
+    {
+        "url": "https://www.rmit.edu.vn/content/dam/rmit/vn/en/assets-for-production/documents/pdfs/vn-parents-guide/en-fc-parents-guide-050924.pdf",
+        "filename": "rmit-vietnam-library-parents-guide.pdf",
+    },
+]
 
 
-def setup_directory():
-    """Tạo thư mục data/landing/legal/ nếu chưa có."""
+def setup_directory() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    print(f"✓ Thư mục đã sẵn sàng: {DATA_DIR}")
 
 
-# TODO: Tải file PDF/DOCX về DATA_DIR
-# Có thể tải thủ công hoặc viết script download nếu có direct link.
-#
-# Ví dụ nếu có direct link:
-#
-# import requests
-#
-# def download_file(url: str, filename: str):
-#     response = requests.get(url)
-#     filepath = DATA_DIR / filename
-#     filepath.write_bytes(response.content)
-#     print(f"✓ Đã tải: {filepath}")
-#
-# Nếu trang là HTML thuần (không phải PDF sẵn), có thể convert nội dung text
-# thành PDF đơn giản bằng thư viện fpdf2 (đã có trong requirements.txt).
+def download_file(url: str, filename: str) -> Path:
+    response = requests.get(url, timeout=30)
+    response.raise_for_status()
+    content_type = response.headers.get("content-type", "").lower()
+    if "pdf" not in content_type and not response.content.startswith(b"%PDF"):
+        raise ValueError(f"Expected PDF from {url}, received {content_type or 'unknown content'}")
+    if len(response.content) <= 1024:
+        raise ValueError(f"Downloaded file is too small: {url}")
+    destination = DATA_DIR / filename
+    destination.write_bytes(response.content)
+    return destination
+
+
+def collect_all() -> list[Path]:
+    setup_directory()
+    downloaded = []
+    for item in LEGAL_DOCUMENTS:
+        destination = download_file(item["url"], item["filename"])
+        downloaded.append(destination)
+        print(f"Downloaded: {destination}")
+    return downloaded
 
 
 if __name__ == "__main__":
-    setup_directory()
+    collect_all()
