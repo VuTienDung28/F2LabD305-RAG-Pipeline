@@ -19,11 +19,12 @@ CHUNK_SIZE = 800
 CHUNK_OVERLAP = 100
 CHUNKING_METHOD = "recursive"
 
-# BGE-M3 supports both Vietnamese and English, which matches this corpus. It
-# produces normalized 1024-dimensional dense vectors suitable for cosine search.
-EMBEDDING_MODEL = "BAAI/bge-m3"
+# OpenAI's small embedding model keeps indexing lightweight on machines without
+# a GPU. Requesting 1024 dimensions preserves the collection shape expected by
+# the rest of the lab while Task 4 and Task 5 share exactly the same embedder.
+EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_DIM = 1024
-EMBEDDING_BATCH_SIZE = 8
+EMBEDDING_BATCH_SIZE = 64
 
 VECTOR_STORE = "chromadb"
 COLLECTION_NAME = "university_services_docs"
@@ -94,30 +95,47 @@ def chunk_documents(documents: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 @lru_cache(maxsize=1)
 def get_embedding_model():
-    """Load the shared SentenceTransformer model once per Python process."""
-    from sentence_transformers import SentenceTransformer
+    """Return one shared OpenAI client for document and query embeddings."""
+    from dotenv import load_dotenv
+    from openai import OpenAI
 
-    return SentenceTransformer(EMBEDDING_MODEL)
+    load_dotenv()
+    return OpenAI()
 
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
-    """Create normalized BGE-M3 embeddings for documents or queries."""
+    """Create OpenAI embeddings for documents or queries in API-safe batches."""
     if not texts:
         return []
 
-    vectors = get_embedding_model().encode(
-        texts,
-        batch_size=EMBEDDING_BATCH_SIZE,
-        show_progress_bar=len(texts) > EMBEDDING_BATCH_SIZE,
-        normalize_embeddings=True,
-        convert_to_numpy=True,
-    )
-    embeddings = vectors.tolist()
-    if embeddings and len(embeddings[0]) != EMBEDDING_DIM:
-        raise ValueError(
-            f"Unexpected embedding dimension {len(embeddings[0])}; "
-            f"expected {EMBEDDING_DIM} from {EMBEDDING_MODEL}."
+    client = get_embedding_model()
+    embeddings: list[list[float]] = []
+
+    for start in range(0, len(texts), EMBEDDING_BATCH_SIZE):
+        batch = texts[start : start + EMBEDDING_BATCH_SIZE]
+        response = client.embeddings.create(
+            model=EMBEDDING_MODEL,
+            input=batch,
+            dimensions=EMBEDDING_DIM,
+            encoding_format="float",
         )
+        response_items = sorted(response.data, key=lambda item: item.index)
+        batch_embeddings = [item.embedding for item in response_items]
+
+        if len(batch_embeddings) != len(batch):
+            raise RuntimeError(
+                "OpenAI returned an unexpected number of embeddings: "
+                f"expected {len(batch)}, got {len(batch_embeddings)}."
+            )
+        if any(len(vector) != EMBEDDING_DIM for vector in batch_embeddings):
+            actual_dimensions = sorted({len(vector) for vector in batch_embeddings})
+            raise ValueError(
+                f"Unexpected embedding dimensions {actual_dimensions}; "
+                f"expected {EMBEDDING_DIM} from {EMBEDDING_MODEL}."
+            )
+
+        embeddings.extend(batch_embeddings)
+
     return embeddings
 
 

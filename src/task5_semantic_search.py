@@ -1,8 +1,10 @@
 """Task 5: dense semantic retrieval from the Task 4 Chroma index.
 
-The default path is fully local cosine retrieval. Optional HyDE generates a
-hypothetical answer with an LLM, embeds that answer, and uses it as the search
-vector to reduce the vocabulary gap between a short question and documents.
+Task 4 and Task 5 share the same OpenAI embedding function so indexed chunks
+and queries always use the same model and vector dimension. Optional HyDE
+generates a hypothetical answer with an LLM, embeds that answer, and uses it as
+the search vector to reduce the vocabulary gap between a short question and
+documents.
 """
 
 from __future__ import annotations
