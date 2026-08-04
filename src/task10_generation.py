@@ -1,6 +1,7 @@
 """Task 10 — Grounded bilingual generation with citations."""
 
 import os
+from time import perf_counter
 
 from dotenv import load_dotenv
 
@@ -49,14 +50,28 @@ def generate_with_citation(
     use_query_expansion: bool = False,
     retrieval_mode: str = "hybrid",
 ) -> dict:
+    started = perf_counter()
+    retrieval_diagnostics = {}
     chunks = retrieve(
         query,
         top_k=top_k,
         mode=retrieval_mode,
         use_query_expansion=use_query_expansion,
+        diagnostics=retrieval_diagnostics,
     )
+    diagnostics = {
+        **retrieval_diagnostics,
+        "embedding_model": os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
+        "generation_model": LLM_MODEL,
+        "history_messages": min(len(history or []), 6),
+    }
     if not chunks:
-        return {"answer": REFUSAL, "sources": [], "retrieval_source": "none"}
+        diagnostics["timings_ms"] = {
+            **retrieval_diagnostics.get("timings_ms", {}),
+            "generation": 0.0,
+            "total": round((perf_counter() - started) * 1000, 1),
+        }
+        return {"answer": REFUSAL, "sources": [], "retrieval_source": "none", "diagnostics": diagnostics}
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is required for generation")
@@ -70,6 +85,7 @@ def generate_with_citation(
             messages.append({"role": message["role"], "content": message["content"]})
     context = format_context(reorder_for_llm(chunks))
     messages.append({"role": "user", "content": f"CONTEXT:\n{context}\n\nQUESTION:\n{query}"})
+    generation_started = perf_counter()
     response = client.chat.completions.create(
         model=LLM_MODEL,
         messages=messages,
@@ -79,10 +95,16 @@ def generate_with_citation(
     answer = response.choices[0].message.content
     if not answer:
         raise RuntimeError("OpenRouter returned an empty answer")
+    diagnostics["timings_ms"] = {
+        **retrieval_diagnostics.get("timings_ms", {}),
+        "generation": round((perf_counter() - generation_started) * 1000, 1),
+        "total": round((perf_counter() - started) * 1000, 1),
+    }
     return {
         "answer": answer,
         "sources": chunks,
         "retrieval_source": chunks[0].get("source", "hybrid"),
+        "diagnostics": diagnostics,
     }
 
 

@@ -68,7 +68,15 @@ Document IDs được lưu trong `pageindex_doc_ids.json`; file này đã đư�
 .venv/Scripts/streamlit.exe run app.py
 ```
 
-UI hỗ trợ lịch sử hội thoại, chọn `top_k`, bật query expansion, xem source URL, retrieval score và excerpt.
+UI hỗ trợ lịch sử hội thoại, chọn `top_k`, bật query expansion, xem source URL, retrieval score và excerpt. Mỗi câu trả lời còn có expander **Chi tiết pipeline / Pipeline details** (đóng mặc định) để trình bày:
+
+- model embedding/generation và chế độ retrieval;
+- số kết quả Dense, BM25, RRF và context cuối;
+- dense score tốt nhất, threshold và trạng thái PageIndex fallback;
+- latency từng stage và tổng thời gian;
+- ánh xạ citation `[Source N]` tới tài liệu/URL.
+
+Diagnostics không hiển thị API key, system prompt, raw context hoặc raw exception.
 
 ## Evaluation
 

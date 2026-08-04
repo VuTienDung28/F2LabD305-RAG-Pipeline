@@ -75,6 +75,48 @@ def test_rerank_empty_candidates():
     assert rerank("library", [], top_k=3) == []
 
 
+def test_retrieval_diagnostics_capture_stages(monkeypatch):
+    import src.task9_retrieval_pipeline as pipeline
+
+    monkeypatch.setattr(pipeline, "semantic_search", lambda *args, **kwargs: [
+        {"content": "dense", "score": 0.9, "metadata": {}}
+    ])
+    monkeypatch.setattr(pipeline, "lexical_search", lambda *args, **kwargs: [
+        {"content": "sparse", "score": 2.0, "metadata": {}}
+    ])
+    monkeypatch.setattr(pipeline, "rerank_rrf", lambda *args, **kwargs: [
+        {"content": "fused", "score": 0.8, "metadata": {}}
+    ])
+    monkeypatch.setattr(pipeline, "rerank", lambda *args, **kwargs: [
+        {"content": "ranked", "score": 0.7, "metadata": {}}
+    ])
+    diagnostics = {}
+
+    pipeline.retrieve("library", top_k=1, diagnostics=diagnostics)
+
+    assert diagnostics["counts"] == {"dense": 1, "lexical": 1, "fused": 1, "final": 1}
+    assert diagnostics["best_dense_score"] == 0.9
+    assert diagnostics["fallback"]["attempted"] is False
+    assert diagnostics["timings_ms"]["total"] >= 0
+
+
+def test_generation_diagnostics_include_models(monkeypatch):
+    import src.task10_generation as generation
+
+    retrieval_diagnostics = {"mode": "hybrid", "timings_ms": {"total": 1.0}}
+
+    def fake_retrieve(*args, **kwargs):
+        kwargs["diagnostics"].update(retrieval_diagnostics)
+        return []
+
+    monkeypatch.setattr(generation, "retrieve", fake_retrieve)
+    result = generation.generate_with_citation("Unknown policy")
+
+    assert result["diagnostics"]["embedding_model"] == "text-embedding-3-small"
+    assert result["diagnostics"]["generation_model"]
+    assert result["diagnostics"]["timings_ms"]["total"] >= 0
+
+
 def test_generation_refuses_without_evidence(monkeypatch):
     import src.task10_generation as generation
 
@@ -99,6 +141,29 @@ def test_context_contains_source_url():
     }])
 
     assert "https://example.test" in context
+
+
+def test_streamlit_frontend_assets_are_separated():
+    from pathlib import Path
+
+    app_source = Path("app.py").read_text(encoding="utf-8")
+    stylesheet = Path("assets/styles.css").read_text(encoding="utf-8")
+
+    assert "<style>" not in app_source
+    assert "styles.css" in app_source
+    assert "def render_header()" in app_source
+    assert "def render_welcome()" in app_source
+    assert '[data-testid="stAppViewContainer"]' in stylesheet
+
+
+def test_streamlit_uses_dark_theme():
+    from pathlib import Path
+
+    config = Path(".streamlit/config.toml").read_text(encoding="utf-8")
+
+    assert 'base = "dark"' in config
+    assert 'backgroundColor = "#09090b"' in config
+    assert 'textColor = "#fafafa"' in config
 
 
 def test_golden_dataset_has_bilingual_15_cases():
