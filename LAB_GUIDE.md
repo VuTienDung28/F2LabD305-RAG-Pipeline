@@ -16,7 +16,7 @@ Bảng dưới đây tóm tắt các thuật ngữ cốt lõi được sử dụ
 | **Semantic Search** | Dense Retrieval (Cosine Similarity) | **"Tìm kiếm theo ngữ nghĩa"**: Tìm các đoạn văn có nội dung tương đồng về ý nghĩa dù từ ngữ sử dụng khác nhau. |
 | **Lexical Search** | Sparse Retrieval (BM25) | **"Tìm kiếm theo từ khoá chính xác"**: Tìm các đoạn văn chứa đúng từ khoá trong câu hỏi (rất hiệu quả với số hiệu, mã tài liệu, tên riêng). |
 | **HyDE** | Hypothetical Document Embeddings | **"Sinh câu trả lời giả định"**: Cho LLM sinh một đoạn trả lời giả lập trước, sau đó dùng đoạn đó để truy vấn trong cơ sở dữ liệu. |
-| **Query Expansion** | Multi-Query Retrieval | **"Diễn đạt lại câu hỏi"**: Dùng LLM sinh 2-3 biến thể/đồng nghĩa của câu hỏi gốc, search riêng từng biến thể rồi gộp kết quả bằng RRF. |
+| **Query Expansion** | Query Rewriting | **"Diễn đạt lại câu hỏi"**: Dùng LLM viết lại câu hỏi ngắn hoặc mơ hồ thành truy vấn rõ nghĩa hơn trước khi retrieval. |
 | **RRF Reranking** | Reciprocal Rank Fusion | **"Gộp thứ hạng"**: Tổng hợp thứ hạng từ nhiều phương pháp tìm kiếm (Semantic và BM25) để chọn ra các đoạn văn tối ưu nhất. |
 | **Vectorless RAG** | PageIndex Engine | **"Truy vấn theo cấu trúc"**: Đọc hiểu tài liệu theo chương, mục và tiêu đề mà không cần chia nhỏ (chunking) văn bản. |
 | **Lost in the Middle** | Long-context Attention Deficit | **"Giảm chú ý ở giữa"**: Hiện tượng LLM ghi nhớ tốt thông tin ở **đầu** và **cuối** đoạn văn nhưng dễ bỏ sót thông tin ở **giữa**. |
@@ -30,7 +30,7 @@ Bảng dưới đây tóm tắt các thuật ngữ cốt lõi được sử dụ
 Tùy theo số lượng thành viên thực tế của từng nhóm (4, 5 hoặc 6 người), nhóm lựa chọn sơ đồ phân công phù hợp bên dưới:
 
 ### 🔹 Phương Án A: Nhóm 4 Thành Viên (Cấu Trúc Chuẩn)
-* **Role 1 (Team Leader & RAG Architect)**: Điều phối tiến độ, ghép code tổng hợp (`supervisor.py` & Task 9).
+* **Role 1 (Team Leader & RAG Architect)**: Điều phối tiến độ, ghép code tổng hợp trong Task 9.
 * **Role 2 (Data & Retrieval Specialist)**: Phụ trách thu thập, chuẩn hoá dữ liệu (Task 1–3) và xây dựng ChromaDB (Task 4–5).
 * **Role 3 (Frontend & Chatbot Developer)**: Xây dựng giao diện Streamlit `app.py` và nối LLM Generation (Task 10).
 * **Role 4 (Evaluation & QA Engineer)**: Tạo `golden_dataset.json` (15 câu hỏi), thực thi RAGAS `eval_pipeline.py` và viết `results.md`.
@@ -39,8 +39,8 @@ Tùy theo số lượng thành viên thực tế của từng nhóm (4, 5 hoặc
 
 ### 🔹 Phương Án B: Nhóm 5 Thành Viên (Chuyên Sâu Retrieval)
 Tách phần tìm kiếm (Retrieval) thành 2 vị trí chuyên biệt:
-* **Role 1 (Team Leader & RAG Architect)**: Quản lý chung, ghép code pipeline chính (`supervisor.py` & Task 9).
-* **Role 2 (Data & Dense Search Dev)**: Task 1–3 (Data) + Task 4 (ChromaDB) + Task 5 (Semantic Search & HyDE).
+* **Role 1 (Team Leader & RAG Architect)**: Quản lý chung, ghép code pipeline chính trong Task 9.
+* **Role 2 (Data & Dense Search Dev)**: Task 1–3 (Data) + Task 4 (ChromaDB) + Task 5 (Semantic Search & Query Expansion).
 * **Role 3 (Sparse Search & Advanced Reranking Dev)**: Task 6 (BM25/TF-IDF) + Task 7 (RRF Reranking) + Task 8 (PageIndex Fallback).
 * **Role 4 (Frontend & Chatbot Developer)**: Xây dựng Streamlit Chatbot `app.py` + Task 10 (Generation có Citation).
 * **Role 5 (Evaluation & QA Engineer)**: Bộ câu hỏi `golden_dataset.json` + Đánh giá RAGAS & báo cáo so sánh A/B `results.md`.
@@ -51,7 +51,7 @@ Tách phần tìm kiếm (Retrieval) thành 2 vị trí chuyên biệt:
 Chia nhỏ các công đoạn dữ liệu và kiểm thử chuyên sâu:
 * **Role 1 (Team Leader & RAG Architect)**: Quản lý nhóm, kiến trúc Supervisor và điều phối thuyết trình demo.
 * **Role 2 (Data Engineering & Scraping Dev)**: Phụ trách Task 1 (tải PDF chính sách) + Task 2 (crawl bài viết tin tức) + Task 3 (convert Markdown).
-* **Role 3 (Vector Database & Dense Search Dev)**: Task 4 (Chunking & ChromaDB Indexing) + Task 5 (Semantic Search & HyDE).
+* **Role 3 (Vector Database & Dense Search Dev)**: Task 4 (Chunking & ChromaDB Indexing) + Task 5 (Semantic Search & Query Expansion).
 * **Role 4 (Sparse Retrieval & Fallback Dev)**: Task 6 (BM25 / TF-IDF) + Task 7 (RRF Reranking) + Task 8 (PageIndex Fallback).
 * **Role 5 (Frontend UI & App Integration Dev)**: Thiết kế Streamlit Chatbot `app.py` + Task 10 (Citation Generation).
 * **Role 6 (Evaluation & Benchmark QA Dev)**: Xây dựng `golden_dataset.json` mở rộng (20 câu hỏi) + Chạy RAGAS benchmark & viết báo cáo `results.md`.
@@ -79,9 +79,9 @@ Chia nhỏ các công đoạn dữ liệu và kiểm thử chuyên sâu:
 ---
 
 ### 🔹 Checkpoint 2: Chunking, Indexing & Search Cơ Bản — Task 4..6 (0:35 – 1:00 | 25 phút)
-* 👑 **Role 1 (Team Leader & RAG Architect)**: Kiểm tra tham số chunking (`CHUNK_SIZE=800`, `CHUNK_OVERLAP=100`) và xác nhận việc sử dụng embedding model `BAAI/bge-m3`.
+* 👑 **Role 1 (Team Leader & RAG Architect)**: Kiểm tra tham số chunking (`CHUNK_SIZE=800`, `CHUNK_OVERLAP=100`) và xác nhận việc sử dụng OpenAI `text-embedding-3-small` với 1024 chiều.
 * ⚙️ **Role 2 (Data & Dense Search Dev)**: Thực hiện **Task 4** — Cắt đoạn văn bản, gọi model embedding và tạo cơ sở dữ liệu vector ChromaDB (`chroma_db/`).
-* 🎨 **Role 3 (Sparse Search Dev / UI Dev)**: Thực hiện **Task 5** — Hoàn thiện hàm `semantic_search()` trong `src/task5_semantic_search.py` (Dense Retrieval dựa trên Cosine Similarity & HyDE).
+* 🎨 **Role 3 (Sparse Search Dev / UI Dev)**: Thực hiện **Task 5** — Hoàn thiện hàm `semantic_search()` trong `src/task5_semantic_search.py` (Dense Retrieval dựa trên Cosine Similarity và Query Expansion tùy chọn).
 * 📊 **Role 4 / Role 5 / Role 6 (Evaluation & QA Engineer)**: Thực hiện **Task 6** — Hoàn thiện hàm `lexical_search()` trong `src/task6_lexical_search.py` (Sparse Retrieval sử dụng BM25 & TF-IDF).
 * ✅ **Tiêu chí hoàn thành (Pass Criteria)**: Khởi tạo xong `chroma_db/`; chạy `pytest tests/test_individual.py` vượt qua các kiểm thử của Task 4, 5, 6. Coach gọi ngẫu nhiên demo so sánh Semantic Search vs Lexical BM25 trong vài phút cuối (`CP2 Passed`).
 
@@ -130,12 +130,12 @@ Chia nhỏ các công đoạn dữ liệu và kiểm thử chuyên sâu:
 - **Lưu ý**: Nếu trang nguồn cấu hình chặn tự động (HTTP 403), có thể sử dụng bộ dữ liệu mẫu sẵn có trong bài lab hoặc lựa chọn trang công khai khác.
 
 ### Task 3 — Chuẩn Hoá Văn Bản Sang Markdown
-- **Nhiệm vụ**: Chạy `python src/task3_convert_markdown.py`.
+- **Nhiệm vụ**: Chạy `python -m src.task3_convert_markdown`.
 - **Mục tiêu**: Tất cả văn bản dạng PDF/DOCX/JSON/HTML được chuyển đổi thành `.md` trong thư mục `data/standardized/`.
 
 ### Task 4 — Chunking & Indexing
-- **Nhiệm vụ**: Chạy `python src/task4_chunking_indexing.py`.
-- **Mục tiêu**: Phân đoạn văn bản (size=800, overlap=100), chuyển đổi sang dạng vector với model `BAAI/bge-m3` và lưu trữ vào `chroma_db/`.
+- **Nhiệm vụ**: Chạy `python -m src.task4_chunking_indexing`.
+- **Mục tiêu**: Phân đoạn văn bản (size=800, overlap=100), tạo vector OpenAI `text-embedding-3-small` 1024 chiều và lưu vào `chroma_db/`.
 
 ### Task 5 & 6 — Semantic Search & Lexical Search (BM25)
 - **Nhiệm vụ**: Thực thi hàm `semantic_search()` trong `task5_semantic_search.py` và `lexical_search()` trong `task6_lexical_search.py`.
@@ -158,8 +158,8 @@ Chia nhỏ các công đoạn dữ liệu và kiểm thử chuyên sâu:
 | # | Lỗi / Hiện tượng | Nguyên nhân | Cách khắc phục |
 | :-: | :--- | :--- | :--- |
 | **1** | `MissingDependencyException` ở Task 3 | Cài đặt thiếu module đọc định dạng PDF của `markitdown`. | Thực thi: `pip install "markitdown[pdf]"` |
-| **2** | Lỗi trình duyệt khi crawl ở Task 2 | Thư viện `crawl4ai` chưa cài đặt binary Chromium. | Thực thi: `playwright install chromium` |
+| **2** | Lỗi crawl HTTP ở Task 2 | Trang nguồn tạm thời không phản hồi hoặc từ chối request. | Kiểm tra kết nối và URL công khai, sau đó chạy lại `python -m src.task2_crawl_news`. |
 | **3** | `UnicodeEncodeError` trên Windows | Console Windows hiển thị ký tự mã hoá cp1252/cp1258. | Thiết lập biến môi trường: `$env:PYTHONIOENCODING="utf-8"` hoặc dùng `python -X utf8`. |
 | **4** | Logic Fallback không kích hoạt ở Task 9 | Sử dụng điểm RRF thay vì điểm Cosine Similarity gốc để so sánh threshold. | Sử dụng điểm Cosine gốc (`dense_results[0]["score"]`) cho ngưỡng `SCORE_THRESHOLD = 0.48`. |
 | **5** | Vượt giới hạn lượt gọi (Rate Limit) ở RAGAS | RAGAS tạo nhiều lượt gọi LLM judge dẫn đến chạm hạn mức của OpenRouter free. | Thu nhỏ số lượng câu hỏi kiểm thử trong `golden_dataset.json` trong quá trình thử nghiệm. |
-| **6** | Lẫn lộn dữ liệu giữa các lần chạy | Thay đổi bộ văn bản đầu vào nhưng chưa làm sạch cơ sở dữ liệu cũ. | Xóa thư mục `chroma_db/` và khởi chạy lại `task4_chunking_indexing.py`. |
+| **6** | Lẫn lộn dữ liệu giữa các lần chạy | Thay đổi bộ văn bản đầu vào nhưng chưa lập chỉ mục lại. | Chạy lại `python -m src.task4_chunking_indexing`; pipeline sẽ tạo lại collection hiện hành. |

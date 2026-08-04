@@ -54,7 +54,7 @@ K3-Day08-RAG-Pipeline-Starter/
 │   ├── task8_pageindex_vectorless.py
 │   ├── task9_retrieval_pipeline.py
 │   ├── task10_generation.py
-│   └── supervisor.py      ← Pattern nâng cao: Supervisor + Workers song song
+│   └── source_evidence.py ← Đọc và highlight evidence an toàn
 ├── chroma_db/             ← Task 4: vector store đã index (sinh ra khi chạy, không tự viết tay)
 ├── tests/
 │   └── test_individual.py ← Chấm điểm phần Task 1-10 (pytest)
@@ -89,22 +89,16 @@ Tìm và tải về **tối thiểu 3 văn bản chính sách/quy định** dạ
 
 Crawl **tối thiểu 5 bài viết** về thông tin/thông báo dịch vụ đại học (sự kiện, thư viện, hỗ trợ sinh viên, học bổng).
 
-**Thư viện khuyến nghị:** [Crawl4AI](https://github.com/unclecode/crawl4ai)
+**Công cụ của dự án:** `requests`, Beautiful Soup và `markdownify` để tải HTML công khai, loại bỏ thành phần điều hướng rồi chuyển nội dung chính sang Markdown.
 
 **Yêu cầu:**
 - Lưu output vào `data/landing/news/`
-- Mỗi bài báo lưu thành 1 file (JSON hoặc HTML)
-- Ghi rõ metadata: URL gốc, ngày crawl, tiêu đề bài báo
+- Mỗi bài báo lưu thành một file JSON
+- Ghi metadata URL gốc, ngày crawl, tiêu đề và `content_markdown`
 
-**Code mẫu (Crawl4AI):**
-```python
-from crawl4ai import AsyncWebCrawler
-
-async def crawl_article(url: str, output_dir: str):
-    async with AsyncWebCrawler() as crawler:
-        result = await crawler.arun(url=url)
-        # Lưu result.markdown vào file
-        ...
+**Chạy crawler:**
+```bash
+python -m src.task2_crawl_news
 ```
 
 ---
@@ -156,16 +150,14 @@ Các loại splitter phù hợp:
 - `MarkdownHeaderTextSplitter` (tốt cho file có heading rõ)
 - `SemanticChunker` (nâng cao, dùng embedding để tách)
 
-**Embedding model gợi ý:**
-- `sentence-transformers/all-MiniLM-L6-v2` (nhẹ, nhanh)
-- `BAAI/bge-m3` (multilingual, tốt cho tiếng Việt)
-- OpenAI `text-embedding-3-small` (nếu có API key)
+**Embedding model của dự án:**
+- OpenAI `text-embedding-3-small`, output 1024 chiều, hỗ trợ truy vấn tiếng Việt và tiếng Anh.
 
 **Vector Store — sử dụng ChromaDB (Vector Store mặc định của bài lab):**
 ```bash
 pip install chromadb
 ```
-- ChromaDB lưu trữ vector embeddings (`BAAI/bge-m3`), metadata và thông tin phân đoạn local tại thư mục `chroma_db/`
+- ChromaDB lưu trữ vector embeddings OpenAI `text-embedding-3-small` (1024 chiều), metadata và thông tin phân đoạn local tại thư mục `chroma_db/`
 - Hỗ trợ truy vấn tìm kiếm tương đồng Cosine (Cosine Similarity Search) phục vụ Dense Retrieval ở Task 5
 
 **Yêu cầu:**
@@ -374,8 +366,8 @@ def generate_with_citation(query: str, context_chunks: list[dict]) -> str:
 
 **Yêu cầu:**
 - Chọn top_k và top_p phù hợp (giải thích lý do trong code comment)
-- Output phải có citation dạng `[Nguồn, Năm]`
-- Nếu không đủ evidence → trả về "I cannot verify this information"
+- Output dùng citation `[Source N: title]`, ánh xạ trực tiếp tới tiêu đề và URL nguồn trong giao diện
+- Nếu không đủ evidence → trả về thông báo không thể xác minh bằng cả tiếng Việt và tiếng Anh
 
 ---
 
@@ -549,8 +541,17 @@ run_dashboard()
 
 ### Kiến Trúc Hệ Thống
 
-```
-[Vẽ diagram kiến trúc ở đây]
+```text
+RMIT PDF + web pages
+        ↓
+landing JSON/PDF → standardized Markdown → chunks (800/100)
+        ↓
+OpenAI Embeddings + ChromaDB ─┐
+BM25 ─────────────────────────┼→ RRF → Jina rerank → PageIndex fallback
+                              ↓
+                    OpenRouter generation
+                              ↓
+             Streamlit chat + citations + evidence
 ```
 
 ---
@@ -559,10 +560,11 @@ run_dashboard()
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| Vũ Tiến Dũng | 2A202602009 | Role 1 — Team Leader & RAG Architect: quản lý chung, tích hợp pipeline và Task 9 | Hoàn thành |
+| Lê Minh Ngọc | 2A202601471 | Role 2 — Data & Dense Search Dev: Task 1–5, dữ liệu, ChromaDB và semantic search | Hoàn thành |
+| Nguyễn Đức Chung | 2A202601705 | Role 3 — Sparse Search & Advanced Reranking Dev: Task 6–8, BM25, RRF, Jina và PageIndex | Hoàn thành |
+| Chu Nguyễn Tuấn Anh | 2A202601755 | Role 4 — Frontend & Chatbot Developer: Streamlit `app.py` và Task 10 generation có citation | Hoàn thành |
+| Đào Thị Trang | 2A202601809 | Role 5 — Evaluation & QA Engineer: golden dataset, RAGAS A/B, báo cáo và kiểm thử | Hoàn thành |
 
 ---
 
@@ -574,8 +576,6 @@ pip install -r requirements.txt
 
 # Chạy app
 streamlit run app.py
-# hoặc
-chainlit run app.py
 ```
 
 ---
@@ -691,7 +691,6 @@ Theo đúng 7 Checkpoint trong `checkpoint_timer.html` (tổng 180 phút = 3 gi�
 
 ## Tài Liệu Tham Khảo
 
-- [Crawl4AI](https://github.com/unclecode/crawl4ai) — Web crawling library
 - [MarkItDown](https://github.com/microsoft/markitdown) — Microsoft document converter
 - [LangChain Text Splitters](https://python.langchain.com/docs/modules/data_connection/document_transformers/) — Chunking strategies
 - [Weaviate](https://weaviate.io/developers/weaviate) — Vector database with hybrid search

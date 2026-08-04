@@ -9,6 +9,7 @@ from .task9_retrieval_pipeline import retrieve
 
 load_dotenv()
 
+# Five chunks limit prompt size; top-p 0.9 keeps wording natural, while temperature 0.2 favors grounded answers.
 TOP_K = 5
 TOP_P = 0.9
 TEMPERATURE = 0.2

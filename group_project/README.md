@@ -68,7 +68,7 @@ Document IDs được lưu trong `pageindex_doc_ids.json`; file này đã đư�
 .venv/Scripts/streamlit.exe run app.py
 ```
 
-UI hỗ trợ lịch sử hội thoại, chọn `top_k`, bật query expansion, xem source URL, retrieval score và excerpt. Mỗi câu trả lời còn có expander **Chi tiết pipeline / Pipeline details** (đóng mặc định) để trình bày:
+UI hỗ trợ lịch sử hội thoại, chọn `top_k`, bật query expansion, xem source URL, retrieval score và toàn bộ tài liệu với evidence được highlight. Mỗi câu trả lời còn có expander **Chi tiết quy trình RAG** (đóng mặc định) để trình bày:
 
 - model embedding/generation và chế độ retrieval;
 - số kết quả Dense, BM25, RRF và context cuối;
@@ -110,4 +110,22 @@ Golden dataset gồm 16 câu song ngữ có expected answer, expected context v�
 | Generation / Frontend | Task 10 và Streamlit chatbot |
 | Evaluation / QA | Golden dataset, RAGAS A/B và test suite |
 
-Tên thành viên và MSSV cần được nhóm điền theo danh sách thực tế; repository không suy đoán thông tin cá nhân.
+## Thành viên nhóm
+
+| STT | Họ và tên | Mã học viên |
+|---:|---|---|
+| 1 | Vũ Tiến Dũng | 2A202602009 |
+| 2 | Chu Nguyễn Tuấn Anh | 2A202601755 |
+| 3 | Đào Thị Trang | 2A202601809 |
+| 4 | Lê Minh Ngọc | 2A202601471 |
+| 5 | Nguyễn Đức Chung | 2A202601705 |
+
+## Phân công theo Phương án B
+
+| Role | Thành viên | Phạm vi phụ trách | Trạng thái |
+|---|---|---|---|
+| Role 1 — Team Leader & RAG Architect | Vũ Tiến Dũng | Quản lý chung, tích hợp pipeline chính và Task 9 | Hoàn thành |
+| Role 2 — Data & Dense Search Dev | Lê Minh Ngọc | Task 1–3, Task 4 ChromaDB và Task 5 Semantic Search | Hoàn thành |
+| Role 3 — Sparse Search & Advanced Reranking Dev | Nguyễn Đức Chung | Task 6 BM25, Task 7 RRF/Jina và Task 8 PageIndex fallback | Hoàn thành |
+| Role 4 — Frontend & Chatbot Developer | Chu Nguyễn Tuấn Anh | Streamlit `app.py` và Task 10 Generation có Citation | Hoàn thành |
+| Role 5 — Evaluation & QA Engineer | Đào Thị Trang | `golden_dataset.json`, RAGAS A/B, `results.md` và kiểm thử | Hoàn thành |

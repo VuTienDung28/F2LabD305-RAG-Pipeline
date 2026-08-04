@@ -10,9 +10,11 @@ load_dotenv()
 
 STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
 CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
+# Recursive 800/100 chunks preserve local context while keeping retrieval passages focused.
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 100
 CHUNKING_METHOD = "recursive"
+# OpenAI provides multilingual embeddings without shipping a large local model; 1024 dims reduce index size.
 EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 EMBEDDING_DIM = 1024
 EMBEDDING_BATCH_SIZE = 32
