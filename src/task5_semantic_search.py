@@ -37,6 +37,9 @@ def semantic_search(query: str, top_k: int = 10) -> list[dict]:
     #
     # model = get_embedding_model()
     # query_vector = model.encode(query).tolist()
+    # (Nếu Task 4 dùng embed_texts() dispatch theo EMBEDDING_PROVIDER thì gọi
+    #  embed_texts([query])[0] ở đây thay vì get_embedding_model().encode() —
+    #  để Task 5 tự động dùng đúng provider mà không cần sửa lại.)
     #
     # collection = get_collection()
     # results = collection.query(

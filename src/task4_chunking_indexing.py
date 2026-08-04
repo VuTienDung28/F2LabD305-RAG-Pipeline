@@ -12,10 +12,14 @@ Chunking options (langchain-text-splitters):
     - MarkdownHeaderTextSplitter: tốt cho file có heading
     - SemanticChunker: dùng embedding để tách (nâng cao)
 
-Embedding model options:
-    - sentence-transformers/all-MiniLM-L6-v2 (384 dim, nhẹ)
-    - BAAI/bge-m3 (1024 dim, multilingual, tốt cho cả tiếng Việt lẫn tiếng Anh)
-    - OpenAI text-embedding-3-small (1536 dim, API)
+Embedding model options (chọn 1, cân nhắc đánh đổi cài đặt nặng vs cần API key):
+    - sentence-transformers/all-MiniLM-L6-v2 hoặc BAAI/bge-m3 — chạy local, không
+      cần API key, nhưng cài nặng (~1-2GB vì kéo theo torch)
+    - Google models/text-embedding-004 (768 dim) — nhẹ, cần GEMINI_API_KEY
+    - OpenAI text-embedding-3-small (1536 dim) — nhẹ, cần OPENAI_API_KEY
+    Gợi ý: đọc EMBEDDING_PROVIDER từ .env (os.getenv("EMBEDDING_PROVIDER", "sentence_transformers"))
+    để cả nhóm có thể đổi provider mà không sửa code — nhớ đổi provider phải xoá
+    chroma_db/ cũ và reindex vì dimension khác nhau (1024/768/1536) không tương thích ngược.
 
 Vector store options:
     - ChromaDB (khuyến cáo: đơn giản, local persistent, không cần Docker)
@@ -116,7 +120,7 @@ def embed_chunks(chunks: list[dict]) -> list[dict]:
     """
     # TODO: Implement embedding
     #
-    # Ví dụ với sentence-transformers:
+    # Ví dụ với sentence-transformers (local, mặc định):
     # from sentence_transformers import SentenceTransformer
     #
     # model = SentenceTransformer(EMBEDDING_MODEL)
@@ -125,6 +129,11 @@ def embed_chunks(chunks: list[dict]) -> list[dict]:
     # for chunk, emb in zip(chunks, embeddings):
     #     chunk["embedding"] = emb.tolist()
     # return chunks
+    #
+    # Nâng cao (optional): nếu muốn cho cả nhóm chọn được provider qua .env, viết
+    # 1 hàm embed_texts(texts) dispatch theo os.getenv("EMBEDDING_PROVIDER") sang
+    # sentence-transformers | Google (genai.embed_content) | OpenAI (client.embeddings.create)
+    # rồi gọi lại hàm đó ở đây và ở Task 5 — tránh viết logic embed lặp lại 2 nơi.
     raise NotImplementedError("Implement embed_chunks")
 
 
