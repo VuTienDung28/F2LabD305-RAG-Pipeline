@@ -14,6 +14,81 @@ def test_chunk_metadata_is_preserved():
     assert chunks
     assert chunks[0]["metadata"]["source_url"] == "https://example.test"
     assert chunks[0]["metadata"]["chunk_index"] == 0
+    assert chunks[0]["metadata"]["chunk_start"] == 0
+
+
+def test_loaded_documents_include_standardized_path(tmp_path, monkeypatch):
+    import src.task4_chunking_indexing as indexing
+
+    document = tmp_path / "news" / "access.md"
+    document.parent.mkdir()
+    document.write_text("# Access\n\n**Type:** news\n\nLibrary access details.", encoding="utf-8")
+    monkeypatch.setattr(indexing, "STANDARDIZED_DIR", tmp_path)
+
+    loaded = indexing.load_documents()
+
+    assert loaded[0]["metadata"]["document_path"] == "news/access.md"
+
+
+def test_source_evidence_escapes_and_highlights(tmp_path):
+    from src.source_evidence import highlight_document, load_document
+
+    document = tmp_path / "news" / "access.md"
+    document.parent.mkdir()
+    text = 'Before <script>alert("x")</script> evidence after.'
+    document.write_text(text, encoding="utf-8")
+    evidence = "evidence"
+    start = text.index(evidence)
+
+    loaded = load_document("news/access.md", root=tmp_path)
+    rendered, highlighted = highlight_document(loaded, [{
+        "content": evidence,
+        "metadata": {"chunk_start": start},
+    }])
+
+    assert "<script>" not in rendered
+    assert "&lt;script&gt;" in rendered
+    assert '<mark class="rag-chunk">evidence</mark>' in rendered
+    assert highlighted == 1
+
+
+def test_source_evidence_rejects_path_traversal(tmp_path):
+    from src.source_evidence import load_document
+
+    assert load_document("../secret.md", root=tmp_path) is None
+    assert load_document("C:/secret.md", root=tmp_path) is None
+
+
+def test_generation_returns_sources_in_context_order(monkeypatch):
+    import sys
+    import src.task10_generation as generation
+
+    chunks = [
+        {"content": value, "score": 1.0, "metadata": {"source": f"{value}.md"}}
+        for value in ["one", "two", "three", "four"]
+    ]
+    monkeypatch.setattr(generation, "retrieve", lambda *args, **kwargs: chunks)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test")
+
+    request = {}
+
+    class Completions:
+        def create(self, **kwargs):
+            request.update(kwargs)
+            message = type("Message", (), {"content": "answer"})()
+            choice = type("Choice", (), {"message": message})()
+            return type("Response", (), {"choices": [choice]})()
+
+    client = type("Client", (), {
+        "chat": type("Chat", (), {"completions": Completions()})(),
+    })()
+    monkeypatch.setitem(sys.modules, "openai", type("OpenAIStub", (), {"OpenAI": lambda **kwargs: client}))
+    monkeypatch.setitem(sys.modules, "openai.types.chat", type("ChatTypes", (), {"ChatCompletionMessageParam": dict}))
+
+    result = generation.generate_with_citation("question")
+
+    assert [source["content"] for source in result["sources"]] == ["one", "three", "four", "two"]
+    assert request["messages"][-1]["content"].index("one") < request["messages"][-1]["content"].index("three")
 
 
 def test_openai_embeddings_use_1024_dimensions(monkeypatch):
@@ -153,7 +228,9 @@ def test_streamlit_frontend_assets_are_separated():
     assert "styles.css" in app_source
     assert "def render_header()" in app_source
     assert "def render_welcome()" in app_source
+    assert "from src.source_evidence import highlight_document, load_document" in app_source
     assert '[data-testid="stAppViewContainer"]' in stylesheet
+    assert ".rag-chunk" in stylesheet
 
 
 def test_streamlit_uses_dark_theme():

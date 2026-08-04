@@ -83,7 +83,8 @@ def generate_with_citation(
     for message in (history or [])[-6:]:
         if message.get("role") in {"user", "assistant"} and message.get("content"):
             messages.append({"role": message["role"], "content": message["content"]})
-    context = format_context(reorder_for_llm(chunks))
+    sources = reorder_for_llm(chunks)
+    context = format_context(sources)
     messages.append({"role": "user", "content": f"CONTEXT:\n{context}\n\nQUESTION:\n{query}"})
     generation_started = perf_counter()
     response = client.chat.completions.create(
@@ -102,8 +103,8 @@ def generate_with_citation(
     }
     return {
         "answer": answer,
-        "sources": chunks,
-        "retrieval_source": chunks[0].get("source", "hybrid"),
+        "sources": sources,
+        "retrieval_source": sources[0].get("source", "hybrid"),
         "diagnostics": diagnostics,
     }
 

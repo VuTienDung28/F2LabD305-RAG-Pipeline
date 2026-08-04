@@ -31,6 +31,7 @@ def _metadata_from_markdown(path: Path, content: str) -> dict:
                 fields[key.casefold()] = value.strip()
     return {
         "source": path.name,
+        "document_path": path.relative_to(STANDARDIZED_DIR).as_posix(),
         "source_url": fields.get("source", ""),
         "title": title or path.stem,
         "type": fields.get("type", path.parent.name),
@@ -53,13 +54,22 @@ def chunk_documents(documents: list[dict]) -> list[dict]:
         chunk_size=CHUNK_SIZE,
         chunk_overlap=CHUNK_OVERLAP,
         separators=["\n\n", "\n", ". ", " ", ""],
+        add_start_index=True,
     )
     chunks = []
     for document in documents:
-        for index, text in enumerate(splitter.split_text(document["content"])):
+        split_documents = splitter.create_documents(
+            [document["content"]],
+            metadatas=[document.get("metadata", {})],
+        )
+        for index, split in enumerate(split_documents):
             chunks.append({
-                "content": text,
-                "metadata": {**document.get("metadata", {}), "chunk_index": index},
+                "content": split.page_content,
+                "metadata": {
+                    **split.metadata,
+                    "chunk_index": index,
+                    "chunk_start": split.metadata["start_index"],
+                },
             })
     return chunks
 

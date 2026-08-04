@@ -125,6 +125,27 @@ a {
     color: #ff6b73 !important;
 }
 
+.source-document {
+    max-height: 38rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #e4e4e7;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.84rem;
+    line-height: 1.65;
+}
+
+.rag-chunk {
+    background: #713f12;
+    color: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: 0.08rem 0.16rem;
+}
+
 @media (max-width: 640px) {
     .block-container {
         padding: 1rem 0.8rem 5rem;
