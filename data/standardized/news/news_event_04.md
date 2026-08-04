@@ -1,0 +1,28 @@
+# "Beyond the Pages" event recap
+
+**Source:** https://www.rmit.edu.vn/libraryvn/about-us/news/2025/beyond-the-pages-recap
+**Crawled:** 2026-08-04T03:28:37.888639+00:00
+
+---
+
+The Library successfully delivered the first “Beyond the Pages” Newbie Series event of the year. We partnered with SIFE RMIT Vietnam – Hanoi campus and RMIT SGS Debate Club to create inclusive engagement activities across both campuses.
+
+A cross-campus engagement with active game booths
+
+“Beyond the Pages” at RMIT Vietnam closed on a vibrant note, leaving both campuses energised with creativity, connection and meaningful conversations. The event brought together students across disciplines to explore the impact of AI-generated content on human life while reinforcing the importance of critical thinking and active reading. Through a mix of discussions and hands-on activities, the program created multiple entry points for students to re-engage with reading in a way that feels relevant to their daily learning experience.
+
+Sharing from Sustainability perspectives
+
+With the sponsor of the Sustainability Department, we also explored practical approaches to using resources more responsibly. This included raising awareness of sustainable practices in event delivery, encouraging mindful material use and introducing small but impactful habits that students can adopt in their daily academic and personal activities.
+
+Students are joining the Audio book challenge
+
+At Hanoi Campus, activities ranged from emotional voice-over performances and creative bookmark-making to engaging detective challenges. Led by SIFE, these sessions created a reflective space where students could step away from digital distractions and reconnect with the value of deep reading and knowledge exploration.
+
+Both teams used all their arguments to defend their ideas.
+
+At Saigon South campus, the debate mini contest stood out, bringing forward diverse perspectives from two teams, complemented by insightful sharing from Dr Jonathan J. Felix and MSc Hien Tran on the topic “AI-generated summaries do more harm than good”. The session encouraged students to critically evaluate how AI tools influence comprehension, learning behaviours and academic integrity.
+
+We’ve learned that reading isn’t dying; it’s transforming. As part of this shift, the Library will continue to introduce practical initiatives that support sustained reading habits.
+
+Contributor: Uyen Nguyen

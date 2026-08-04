@@ -20,13 +20,15 @@ Step 3: Choose one room and Press “Request” then “Check availability”
 
 P a g e  1 | 3
 
-BOOKING ROOM INSTRUCTION FOR USERS_UPDATE 2025
+
+BOOKING ROOM INSTRUCTION FOR USERS_UPDATE 2025
 
 Step 4: Choose booking slot (Date, time slot max to 60 minutes) – then “Send Request”
 
 P a g e  2 | 3
 
-BOOKING ROOM INSTRUCTION FOR USERS_UPDATE 2025
+
+BOOKING ROOM INSTRUCTION FOR USERS_UPDATE 2025
 
 Step 5: Double check your request information in your Library account
 

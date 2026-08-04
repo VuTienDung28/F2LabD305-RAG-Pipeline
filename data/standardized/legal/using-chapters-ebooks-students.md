@@ -57,7 +57,8 @@ ROM.
 RMIT University. Copyright Management Service.
 Email: copyright@rmit.edu.au  Tel: 9925 8064
 
-Printing
+
+Printing
 
 You can print copies of chapters from the Library databases or from within eReserve.
 

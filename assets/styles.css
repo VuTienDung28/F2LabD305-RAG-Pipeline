@@ -1,0 +1,153 @@
+[data-testid="stAppViewContainer"] {
+    background: #09090b;
+    color: #fafafa;
+}
+
+[data-testid="stHeader"] {
+    background: rgba(9, 9, 11, 0.9);
+}
+
+[data-testid="stSidebar"] {
+    background: #111113;
+    border-right: 1px solid #27272a;
+}
+
+.block-container {
+    max-width: 980px;
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+}
+
+.app-eyebrow {
+    color: #ff4b55;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.app-title {
+    color: #fafafa;
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    margin: 0.15rem 0 0.35rem;
+}
+
+.app-subtitle {
+    color: #a1a1aa;
+    font-size: 1rem;
+    max-width: 680px;
+    margin-bottom: 1.3rem;
+}
+
+.status-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.4rem;
+}
+
+.status-pill {
+    background: #18181b;
+    border: 1px solid #3f3f46;
+    border-radius: 999px;
+    color: #d4d4d8;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.65rem;
+}
+
+.welcome-card {
+    background: linear-gradient(135deg, #18181b 0%, #111113 100%);
+    border: 1px solid #3f3f46;
+    border-radius: 18px;
+    color: #d4d4d8;
+    padding: 1.25rem 1.4rem;
+    margin: 0.5rem 0 1rem;
+}
+
+.welcome-card strong {
+    color: #fafafa;
+}
+
+.welcome-description {
+    color: #a1a1aa;
+}
+
+[data-testid="stChatMessage"] {
+    background: #18181b;
+    border: 1px solid #3f3f46;
+    border-radius: 16px;
+    color: #fafafa;
+    padding: 0.35rem 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+[data-testid="stMetric"] {
+    background: #18181b;
+    border: 1px solid #3f3f46;
+    border-radius: 12px;
+    padding: 0.65rem 0.75rem;
+}
+
+[data-testid="stExpander"] {
+    background: #18181b;
+    border: 1px solid #3f3f46;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+[data-testid="stChatInput"] {
+    background: #18181b;
+    border-color: #52525b;
+}
+
+.stButton > button {
+    background: #18181b;
+    border-color: #3f3f46;
+    color: #fafafa;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.stButton > button:hover {
+    border-color: #e61e2a;
+    color: #fff;
+}
+
+div[data-testid="stTable"] {
+    border: 1px solid #27272a;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+a {
+    color: #ff6b73 !important;
+}
+
+.source-document {
+    max-height: 38rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #e4e4e7;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.84rem;
+    line-height: 1.65;
+}
+
+.rag-chunk {
+    background: #713f12;
+    color: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: 0.08rem 0.16rem;
+}
+
+@media (max-width: 640px) {
+    .block-container {
+        padding: 1rem 0.8rem 5rem;
+    }
+}

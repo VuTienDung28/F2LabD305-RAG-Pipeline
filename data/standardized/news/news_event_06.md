@@ -1,6 +1,6 @@
 # RMIT Vietnam Library at Experience Day 2025
 
-**Source:** https://www.rmit.edu.vn/libraryvn/about-us/news/2025/experience-day-2025-at-the-library  
+**Source:** https://www.rmit.edu.vn/libraryvn/about-us/news/2025/experience-day-2025-at-the-library
 **Crawled:** 2026-08-04T03:28:38.718309+00:00
 
 ---

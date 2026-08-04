@@ -1,126 +1,116 @@
-"""Task 7: deterministic Reciprocal Rank Fusion (RRF) reranking.
+"""Task 7 — Reciprocal Rank Fusion and optional Jina reranking."""
 
-RRF combines rankings without comparing incompatible score scales.  Dense
-cosine scores and BM25 scores can therefore contribute equally based on rank:
+import os
 
-    RRF(document) = sum(1 / (k + rank))
+import requests
+from dotenv import load_dotenv
 
-The fused score is only a ranking signal.  Task 9 must use the original dense
-cosine score, not the RRF score, when deciding whether to invoke a fallback.
-"""
-
-from __future__ import annotations
-
-from typing import Any
+load_dotenv()
 
 
-DEFAULT_RRF_K = 60
-
-
-def _document_key(item: dict[str, Any]) -> str:
-    """Create a stable identity shared by dense and lexical result objects."""
-    metadata = item.get("metadata") or {}
-    source = metadata.get("source") or metadata.get("filename")
+def _identity(item: dict) -> str:
+    metadata = item.get("metadata", {})
+    source = metadata.get("source")
     chunk_index = metadata.get("chunk_index")
-
-    if source is not None and chunk_index is not None:
-        return f"{source}::{chunk_index}"
-    if item.get("id") is not None:
-        return str(item["id"])
-
-    # Content is the last-resort identifier used by the starter task examples.
-    return " ".join(str(item.get("content", "")).split()).casefold()
+    return f"{source}::{chunk_index}" if source is not None and chunk_index is not None else item["content"]
 
 
-def rerank_rrf(
-    ranked_lists: list[list[dict[str, Any]]],
-    top_k: int = 5,
-    k: int = DEFAULT_RRF_K,
-) -> list[dict[str, Any]]:
-    """Fuse one or more ranked lists with Reciprocal Rank Fusion.
-
-    Duplicate documents inside one input list count only once.  The returned
-    item preserves its original content and metadata, while ``score`` and
-    ``rrf_score`` contain the fused ranking score.
-    """
-    if top_k <= 0 or not ranked_lists:
+def rerank_cross_encoder(query: str, candidates: list[dict], top_k: int = 5) -> list[dict]:
+    if not candidates:
         return []
-    if k < 0:
-        raise ValueError("RRF smoothing constant k must be non-negative.")
-
-    scores: dict[str, float] = {}
-    items: dict[str, dict[str, Any]] = {}
-    first_seen: dict[str, int] = {}
-    seen_counter = 0
-
-    for ranked_list in ranked_lists:
-        seen_in_list: set[str] = set()
-        for rank, item in enumerate(ranked_list, start=1):
-            if not isinstance(item, dict) or not item.get("content"):
-                continue
-
-            key = _document_key(item)
-            if not key or key in seen_in_list:
-                continue
-            seen_in_list.add(key)
-
-            if key not in first_seen:
-                first_seen[key] = seen_counter
-                seen_counter += 1
-                items[key] = dict(item)
-
-            scores[key] = scores.get(key, 0.0) + 1.0 / (k + rank)
-
-            # Prefer the representation with the better original retrieval
-            # score when two retrievers return the same chunk.
-            current_score = float(items[key].get("score", float("-inf")))
-            candidate_score = float(item.get("score", float("-inf")))
-            if candidate_score > current_score:
-                items[key] = dict(item)
-
-    ordered_keys = sorted(
-        scores,
-        key=lambda key: (-scores[key], first_seen[key]),
+    api_key = os.getenv("JINA_API_KEY")
+    if not api_key:
+        return sorted(candidates, key=lambda item: item.get("score", 0.0), reverse=True)[:top_k]
+    response = requests.post(
+        "https://api.jina.ai/v1/rerank",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json={
+            "model": "jina-reranker-v2-base-multilingual",
+            "query": query,
+            "documents": [candidate["content"] for candidate in candidates],
+            "top_n": min(top_k, len(candidates)),
+        },
+        timeout=30,
     )
+    response.raise_for_status()
+    payload = response.json()
+    if not isinstance(payload.get("results"), list):
+        raise RuntimeError("Jina reranker returned an invalid response")
+    return [
+        {
+            **candidates[item["index"]],
+            "score": float(item["relevance_score"]),
+        }
+        for item in payload["results"]
+    ]
 
-    results: list[dict[str, Any]] = []
-    for key in ordered_keys[:top_k]:
-        result = dict(items[key])
-        result["original_score"] = result.get("score")
-        result["score"] = scores[key]
-        result["rrf_score"] = scores[key]
-        results.append(result)
+
+def rerank_mmr(
+    query_embedding: list[float],
+    candidates: list[dict],
+    top_k: int = 5,
+    lambda_param: float = 0.7,
+) -> list[dict]:
+    import numpy as np
+
+    if not candidates:
+        return []
+
+    def cosine(left, right):
+        left_array, right_array = np.asarray(left), np.asarray(right)
+        denominator = np.linalg.norm(left_array) * np.linalg.norm(right_array)
+        return float(np.dot(left_array, right_array) / denominator) if denominator else 0.0
+
+    selected, remaining = [], list(range(len(candidates)))
+    for _ in range(min(top_k, len(candidates))):
+        best_index, best_score = None, float("-inf")
+        for index in remaining:
+            relevance = cosine(query_embedding, candidates[index]["embedding"])
+            diversity = max(
+                (cosine(candidates[index]["embedding"], candidates[chosen]["embedding"]) for chosen in selected),
+                default=0.0,
+            )
+            score = lambda_param * relevance - (1 - lambda_param) * diversity
+            if score > best_score:
+                best_index, best_score = index, score
+        if best_index is None:
+            break
+        selected.append(best_index)
+        remaining.remove(best_index)
+    return [candidates[index] for index in selected]
+
+
+def rerank_rrf(ranked_lists: list[list[dict]], top_k: int = 5, k: int = 60) -> list[dict]:
+    scores, items = {}, {}
+    for ranked_list in ranked_lists:
+        for rank, item in enumerate(ranked_list, 1):
+            identity = _identity(item)
+            scores[identity] = scores.get(identity, 0.0) + 1.0 / (k + rank)
+            items.setdefault(identity, item)
+    results = []
+    for identity, score in sorted(scores.items(), key=lambda pair: pair[1], reverse=True)[:top_k]:
+        results.append({**items[identity], "score": float(score)})
     return results
 
 
 def rerank(
     query: str,
-    candidates: list[dict[str, Any]],
+    candidates: list[dict],
     top_k: int = 5,
-    method: str = "rrf",
-) -> list[dict[str, Any]]:
-    """Apply the selected reranker to a candidate list.
-
-    This Role 3 implementation deliberately chooses the no-API RRF option from
-    the assignment.  With one list, RRF preserves the retriever's ordering;
-    Task 9 performs the meaningful fusion by passing dense and BM25 lists to
-    :func:`rerank_rrf` directly.
-    """
-    del query  # RRF uses rank positions rather than query text directly.
-
-    if method.casefold() != "rrf":
-        raise ValueError("This implementation supports method='rrf'.")
-    return rerank_rrf([candidates], top_k=top_k)
+    method: str = "cross_encoder",
+) -> list[dict]:
+    if method == "cross_encoder":
+        return rerank_cross_encoder(query, candidates, top_k)
+    if method == "rrf":
+        return sorted(candidates, key=lambda item: item.get("score", 0.0), reverse=True)[:top_k]
+    if method == "mmr":
+        raise ValueError("Use rerank_mmr() with a query embedding")
+    raise ValueError(f"Unknown rerank method: {method}")
 
 
 if __name__ == "__main__":
-    dense = [
-        {"content": "Study room booking guide", "score": 0.82, "metadata": {"source": "a", "chunk_index": 0}},
-        {"content": "Library events", "score": 0.65, "metadata": {"source": "b", "chunk_index": 0}},
+    candidates = [
+        {"content": "Tuition fee payment schedule", "score": 0.8, "metadata": {}},
+        {"content": "Library study room booking guide", "score": 0.5, "metadata": {}},
     ]
-    lexical = [
-        {"content": "Study room booking guide", "score": 4.2, "metadata": {"source": "a", "chunk_index": 0}},
-        {"content": "Alumni card policy", "score": 2.1, "metadata": {"source": "c", "chunk_index": 0}},
-    ]
-    for result in rerank_rrf([dense, lexical], top_k=3):
-        print(f"[{result['score']:.6f}] {result['content']}")
+    print(rerank("library booking", candidates, top_k=2))

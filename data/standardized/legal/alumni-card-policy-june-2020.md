@@ -81,7 +81,8 @@ owner’s responsibility and no liability will be accepted by the RMIT Vietnam.
 merchants’ venues, distributors, retails and other business sites, to receive privileges
 for RMIT alumni agreed between RMIT Vietnam and participating merchants
 
-4.2 Participating merchants’ staff are allowed to ask for your identification whenever
+
+4.2 Participating merchants’ staff are allowed to ask for your identification whenever
 necessary to avoid fraudulent use of Alumni cards
 
 5.4 REC operational hours:
