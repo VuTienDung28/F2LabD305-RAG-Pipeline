@@ -27,7 +27,7 @@ Logic:
 
 from .task5_semantic_search import semantic_search
 from .task6_lexical_search import lexical_search
-from .task7_reranking import rerank, rerank_rrf
+from .task7_reranking import rerank_rrf
 from .task8_pageindex_vectorless import pageindex_search
 
 
@@ -40,7 +40,17 @@ from .task8_pageindex_vectorless import pageindex_search
 # giá trị mẫu, mỗi corpus/embedding model sẽ cho khoảng điểm khác nhau.
 SCORE_THRESHOLD = 0.3   # Nếu best score (cosine gốc) < threshold → fallback PageIndex
 DEFAULT_TOP_K = 5
-RERANK_METHOD = "rrf"  # "cross_encoder" | "mmr" | "rrf"
+
+
+def _with_source(results: list[dict], source: str, top_k: int) -> list[dict]:
+    '''Copy and normalize results before handing them to Task 10.'''
+    normalized = []
+    for item in results[:top_k]:
+        result = item.copy()
+        result.setdefault('metadata', {})
+        result['source'] = source
+        normalized.append(result)
+    return normalized
 
 
 def retrieve(
@@ -67,7 +77,8 @@ def retrieve(
         query: Câu truy vấn
         top_k: Số lượng kết quả cuối cùng
         score_threshold: Ngưỡng điểm cosine gốc tối thiểu (KHÔNG phải điểm RRF)
-        use_reranking: Có áp dụng reranking hay không
+        use_reranking: True dùng Dense + Sparse qua RRF; False dùng dense-only
+            làm baseline A/B.
 
     Returns:
         List of {
@@ -77,33 +88,57 @@ def retrieve(
             'source': str  # 'hybrid' hoặc 'pageindex'
         }
     """
-    # TODO: Implement full retrieval pipeline
-    #
-    # Step 1: Song song chạy semantic + lexical
-    # dense_results = semantic_search(query, top_k=top_k * 2)
-    # sparse_results = lexical_search(query, top_k=top_k * 2)
-    #
-    # Step 2: Merge bằng RRF
-    # merged = rerank_rrf([dense_results, sparse_results], top_k=top_k * 2)
-    # for item in merged:
-    #     item["source"] = "hybrid"
-    #
-    # Step 3: Rerank
-    # if use_reranking and merged:
-    #     final_results = rerank(query, merged, top_k=top_k, method=RERANK_METHOD)
-    # else:
-    #     final_results = merged[:top_k]
-    #
-    # Step 4: Check threshold DÙNG ĐIỂM COSINE GỐC (dense_results), KHÔNG PHẢI RRF
-    # best_score = dense_results[0]["score"] if dense_results else 0.0
-    # if best_score < score_threshold:
-    #     print(f"  ⚠ Semantic best score ({best_score:.3f}) < threshold ({score_threshold})")
-    #     fallback = pageindex_search(query, top_k=top_k)
-    #     if fallback:
-    #         return fallback
-    #
-    # return final_results[:top_k]
-    raise NotImplementedError("Implement retrieve")
+    if not isinstance(query, str) or not query.strip() or top_k <= 0:
+        return []
+
+    query = query.strip()
+    candidate_k = top_k * 2
+
+    # P0 runs the independent retrievers sequentially for easier debugging.
+    # They can be parallelized after Task 5 and Task 6 are stable/thread-safe.
+    dense_failed = False
+    try:
+        dense_results = semantic_search(query, top_k=candidate_k) or []
+    except Exception as exc:
+        print(f'Dense retrieval failed; continuing with sparse: {exc}')
+        dense_results = []
+        dense_failed = True
+
+    try:
+        sparse_results = lexical_search(query, top_k=candidate_k) or []
+    except Exception as exc:
+        print(f'Sparse retrieval failed; continuing with dense: {exc}')
+        sparse_results = []
+
+    # Fallback uses the original dense cosine score, never the RRF score.
+    best_dense_score = dense_results[0].get('score', 0.0) if dense_results else 0.0
+    if not dense_failed and best_dense_score < score_threshold:
+        try:
+            fallback_results = pageindex_search(query, top_k=top_k) or []
+        except Exception as exc:
+            print(f'  PageIndex fallback failed: {exc}')
+            fallback_results = []
+
+        if fallback_results:
+            return _with_source(fallback_results, 'pageindex', top_k)
+
+    if use_reranking:
+        if not dense_results and not sparse_results:
+            return []
+        try:
+            final_results = rerank_rrf(
+                [dense_results, sparse_results],
+                top_k=candidate_k,
+            )
+        except Exception as exc:
+            print(f'RRF failed; using available retriever results: {exc}')
+            final_results = dense_results or sparse_results
+    else:
+        # Dense-only A/B baseline. If dense and PageIndex are both unavailable,
+        # keep sparse results as graceful degradation.
+        final_results = dense_results or sparse_results
+
+    return _with_source(final_results, 'hybrid', top_k)
 
 
 if __name__ == "__main__":
