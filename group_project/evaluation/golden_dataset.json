@@ -1,17 +1,158 @@
 [
   {
-    "question": "Học phí hàng năm của chương trình Business tại RMIT Vietnam là bao nhiêu?",
-    "expected_answer": "Khoảng 375.840.000 VND mỗi năm (tùy chương trình cụ thể).",
-    "expected_context": "Trang Tuition Fees, mục Undergraduate Programs"
+    "question": "What proof must alumni provide when applying for an RMIT Alumni card?",
+    "expected_answer": "Alumni must prove that they have completed degree programs at RMIT at the time of application. An alumni card will only be granted when appropriate proof of status is presented.",
+    "expected_context": "When applying for Alumni card, proof of status will be required. You have to prove that you've completed degree programs at the time you apply for alumni card. An alumni card will only be granted when appropriate proof of status is presented.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
   },
   {
-    "question": "Học phí được thanh toán theo hình thức nào?",
-    "expected_answer": "Thanh toán theo từng học kỳ, tính theo từng môn học đã đăng ký.",
-    "expected_context": "Trang Tuition Fees, mục Payment Structure"
+    "question": "Is there an expiration date on the RMIT Alumni card?",
+    "expected_answer": "No, there is no expiration date for the alumni card no matter when the alumnus graduated.",
+    "expected_context": "There is no expiration date for alumni card no matter when you graduated.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
   },
   {
-    "question": "Trường có cung cấp ký túc xá trong khuôn viên không?",
-    "expected_answer": "Không — trường không cung cấp chỗ ở trong khuôn viên, nhưng có đội ngũ hỗ trợ sinh viên tìm chỗ ở gần trường.",
-    "expected_context": "Trang Accommodation Services"
+    "question": "Can alumni request a reprint of their Alumni card if it is lost or broken?",
+    "expected_answer": "Yes, alumni can request a reprint with no fee charge. However, they cannot do so within the first year of their first card request.",
+    "expected_context": "You can request to reprint your alumni card in case of loss or breakage with no fee charge. However, you cannot do so within the first year of your first card request.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
+  },
+  {
+    "question": "What happens if another person uses your Alumni card to access RMIT facilities?",
+    "expected_answer": "The Alumni card is non-transferable. If another individual uses your card to attempt to gain access to the facility, RMIT University reserves the right to terminate your Alumni card.",
+    "expected_context": "Alumni card is non-transferable: should another individual use your card to attempt to gain access to the facility, RMIT University reserves the right to terminate your Alumni card.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
+  },
+  {
+    "question": "What is the minimum age for children to enter RMIT indoor facilities?",
+    "expected_answer": "Children under the age of 13 are not permitted to enter the indoor facilities unless they are to be supervised by a responsible person whilst taking part in any on-campus activities.",
+    "expected_context": "Children under the age of 13 are not permitted to enter the indoor facilities unless they are to be supervised by a responsible person whilst taking part in any on-campus activities.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
+  },
+  {
+    "question": "How much does the REC membership cost for alumni per semester?",
+    "expected_answer": "Entire semester (Week 1 – Week 17): VND 900,000. Half of the semester (Week 1 – Week 9 or Week 9 – Week 17): VND 450,000.",
+    "expected_context": "The REC membership fee for Alumni is based on a semester-by-semester basis: Entire semester (Week 1 – Week 17): VND 900,000. Half of the semester (Week 1 – Week 9 or Week 9-Week 17): VND 450,000.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
+  },
+  {
+    "question": "What are the REC operational hours for alumni members?",
+    "expected_answer": "Mondays to Saturdays: 6.00 – 21.00. Sundays: 9.00 – 18.00. University / public holidays: closed.",
+    "expected_context": "REC operational hours: Mondays to Saturdays: 6.00 – 21.00. Sundays: 9.00 – 18.00. University / public holidays: closed.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
+  },
+  {
+    "question": "What alternative identification can a registered alumnus present if they forget their RMIT Alumni card at the REC?",
+    "expected_answer": "A government ID card (i.e. Chứng Minh Nhân Dân or Thẻ Căn Cước Công Dân) or driving license should be presented.",
+    "expected_context": "In the event that a registered alumnus forgets his/her RMIT alumni card, a government ID card (i.e. Chứng Minh Nhân Dân or Thẻ Căn Cước Công Dân) or driving license should be presented.",
+    "source": "data/standardized/legal/alumni-card-policy-june-2020.md"
+  },
+  {
+    "question": "How many booking slots can one student ID reserve at once for library study rooms?",
+    "expected_answer": "1 ID can book a maximum of 2 slots at once, with a maximum time of 60 minutes per 1 slot.",
+    "expected_context": "RULES AND POLICIES: 1 ID can book a maximum of 2 slots at once. Maximum time per 1 slot: 60 minutes.",
+    "source": "data/standardized/legal/study-room-booking-instruction-2025.md"
+  },
+  {
+    "question": "How far in advance can students book a study room, and when will the booking be automatically canceled?",
+    "expected_answer": "Students can only book for 2 weeks in advance (14 days). The booking will be canceled 15 minutes after the scheduled time if no ID is received at the front desk.",
+    "expected_context": "Students can only book for 2 weeks in advance (14 days). The booking will be canceled 15 minutes after the scheduled time if no ID is received at the front desk.",
+    "source": "data/standardized/legal/study-room-booking-instruction-2025.md"
+  },
+  {
+    "question": "What is the first step to book a library study room at RMIT?",
+    "expected_answer": "Step 1: Access to Library Website: https://www.rmit.edu.vn/libraryvn, choose 'Book a study room'.",
+    "expected_context": "Step 1: Access to Library Website: https://www.rmit.edu.vn/libraryvn, choose \"Book a study room\".",
+    "source": "data/standardized/legal/study-room-booking-instruction-2025.md"
+  },
+  {
+    "question": "What is the maximum percentage of a book that can be used as a snippet or quote under copyright guidelines?",
+    "expected_answer": "Not more than 1% of a work. This applies to 1% of the number of pages of a publication totalling more than 200 pages, 1% of pages in a paginated electronic work (PDF), or 1% of words of an electronic work that is not paginated.",
+    "expected_context": "Using snippets or quotes from books is fine as long as the quote taken is within reasonable limits, that is not quoting more than what would be considered 1% of a work (1% of the number of pages of a publication totalling more than 200 pages, 1% of pages in a paginated electronic work [PDF], or 1% of words of an electronic work that is not paginated).",
+    "source": "data/standardized/legal/using-chapters-ebooks-students.md"
+  },
+  {
+    "question": "How much of a book can students scan or print under fair dealing provisions for research and study?",
+    "expected_answer": "1 chapter or 10% of the number of pages in the work.",
+    "expected_context": "Scanning/Printing Limits [how much you can scan or print] – 1 chapter or 10% of the number of pages in the work under fair dealing provisions.",
+    "source": "data/standardized/legal/using-chapters-ebooks-students.md"
+  },
+  {
+    "question": "Does the American 'Fair Use' concept apply in Australia?",
+    "expected_answer": "No. Fair use is an American provision and terminology for using copyright works and does not apply in Australia. Australia uses 'fair dealing' provisions instead.",
+    "expected_context": "Fair use is an American provision and terminology for using copyright works and does not apply in Australia. Australia uses 'fair dealing' provisions instead.",
+    "source": "data/standardized/legal/using-chapters-ebooks-students.md"
+  },
+  {
+    "question": "What must students do with copyright works placed online after they are no longer enrolled in a course?",
+    "expected_answer": "Copyright works incorporated into online environments within RMIT such as blogs, e-Portfolios, or other online platforms can only remain online whilst enrolled. If you are no longer enrolled in the course the works must be removed.",
+    "expected_context": "Copyright works [that are not creative commons or free licensed works], incorporated into online environments within RMIT such as blogs, e-Portfolios, or other online platforms can only remain online whilst enrolled, if you are no longer enrolled in the course the works must be removed.",
+    "source": "data/standardized/legal/using-chapters-ebooks-students.md"
+  },
+  {
+    "question": "How many books found new homes during the 10th anniversary Book Swap event at RMIT Vietnam Library?",
+    "expected_answer": "Nearly 1,400 books found new homes during the event.",
+    "expected_context": "Nearly 1,400 books found new homes during the 10th anniversary Book Swap event at RMIT Vietnam Library.",
+    "source": "data/standardized/news/article_01.md"
+  },
+  {
+    "question": "How many children's books and stationery items were donated during the Book Swap charity initiative?",
+    "expected_answer": "Nearly 400 children's books and more than 615 stationery items were donated.",
+    "expected_context": "Nearly 400 children's books and more than 615 stationery items were donated to underprivileged students during the Book Swap charity initiative.",
+    "source": "data/standardized/news/article_01.md"
+  },
+  {
+    "question": "How many in-person attendees and online trivia participants joined the 10th anniversary Book Swap event?",
+    "expected_answer": "154 in-person attendees and 41 online trivia participants joined the event. With around 300 unique participants at Book Fest.",
+    "expected_context": "154 in-person attendees and 41 online trivia participants joined the 10th anniversary Book Swap event, with around 300 unique participants at Book Fest.",
+    "source": "data/standardized/news/article_01.md"
+  },
+  {
+    "question": "How many training sessions were held during the Adobe Express Champions launch week and how many participants attended?",
+    "expected_answer": "Eight training sessions were held with more than 100 participants. Four student coaches, called champions, guided attendees through the core features of Adobe Express.",
+    "expected_context": "Eight training sessions were held during the Adobe Express Champions launch week with more than 100 participants. Four student coaches, called champions, guided attendees through core features.",
+    "source": "data/standardized/news/article_02.md"
+  },
+  {
+    "question": "What is the minimum group size required to request a tailored Adobe Express workshop from the RMIT library?",
+    "expected_answer": "Groups of five or more can request tailored Adobe Express workshops from the library.",
+    "expected_context": "Groups of five or more can request tailored Adobe Express workshops from the RMIT Vietnam Library.",
+    "source": "data/standardized/news/article_02.md"
+  },
+  {
+    "question": "How many students and staff from Can Tho University visited the RMIT Saigon South campus library, and on what date?",
+    "expected_answer": "More than 60 students and staff from Can Tho University, majoring in Library and Information Studies, visited on Friday, 20 March.",
+    "expected_context": "More than 60 students and staff from Can Tho University, majoring in Library and Information Studies, visited the RMIT Saigon South campus library on Friday, 20 March.",
+    "source": "data/standardized/news/article_03.md"
+  },
+  {
+    "question": "What was the debate topic at the Saigon South campus during the 'Beyond the Pages' event, and which speakers contributed?",
+    "expected_answer": "The debate topic was 'AI-generated summaries do more harm than good'. Dr Jonathan J. Felix and MSc Hien Tran contributed insightful sharing on the topic.",
+    "expected_context": "The debate topic at Saigon South campus during 'Beyond the Pages' event was 'AI-generated summaries do more harm than good', with contributions from Dr Jonathan J. Felix and MSc Hien Tran.",
+    "source": "data/standardized/news/article_04.md"
+  },
+  {
+    "question": "Who were the grand winners of the 'Words That Inspire' writing contest?",
+    "expected_answer": "Tran Thuy Hoang Uyen (Saigon South campus) and Nguyen Danh Khanh Phuc (Hanoi campus) were the grand winners.",
+    "expected_context": "Tran Thuy Hoang Uyen (Saigon South campus) and Nguyen Danh Khanh Phuc (Hanoi campus) were awarded grand winners of the 'Words That Inspire' writing contest.",
+    "source": "data/standardized/news/article_05.md"
+  },
+  {
+    "question": "On what dates did the 'Words That Inspire' awards ceremonies take place?",
+    "expected_answer": "The awards ceremonies took place on 10 December at Saigon South campus and 12 December at Hanoi campus.",
+    "expected_context": "The 'Words That Inspire' awards ceremonies took place on 10 December at Saigon South campus and 12 December at Hanoi campus.",
+    "source": "data/standardized/news/article_05.md"
+  },
+  {
+    "question": "How many total visitors came to the RMIT library and library booth during Experience Day 2025?",
+    "expected_answer": "Over 6,000 visitors in total came to the library and library booth.",
+    "expected_context": "Over 6,000 visitors in total came to the RMIT library and library booth during Experience Day 2025.",
+    "source": "data/standardized/news/article_06.md"
+  },
+  {
+    "question": "How many students and parents attended Experience Day 2025 across both campuses?",
+    "expected_answer": "Nearly 10,000 students and parents attended Experience Day 2025 across both Saigon South campus and Hanoi campus.",
+    "expected_context": "A special thank to nearly 10,000 students and parents for making Experience Day 2025 an unforgettable blast in both Saigon South campus and Hanoi campus.",
+    "source": "data/standardized/news/article_06.md"
   }
 ]
